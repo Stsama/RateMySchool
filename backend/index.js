@@ -3,14 +3,21 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const MongoStore = require('connect-mongo');
+const bodyParser = require('body-parser');
 const app = express();
 const session = require('express-session');
 const passport = require('passport')
+
+// port 
 const port = process.env.PORT || 3000;
+
+// routes
 const userRoute = require('./routes/users')
 const authRoute = require('./routes/auth')
-const MongoStore = require('connect-mongo');
-const bodyParser = require('body-parser');
+const contactRoute = require('./routes/contact')
+const schoolRoute = require('./routes/schools')
+
 
 // session store
 app.use(session({
@@ -43,6 +50,8 @@ app.use(morgan("common"));
 
 app.use('/api/v1/users', userRoute)
 app.use('/api/v1/auth', authRoute)
+app.use(contactRoute)
+app.use('/api/v1/schools', schoolRoute)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

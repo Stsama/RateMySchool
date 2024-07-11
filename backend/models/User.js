@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
     googleId: {
@@ -24,7 +24,6 @@ const UserSchema = new mongoose.Schema({
     },
     phoneNumber:{
         type: Number,
-        require: true,
         min: 7
     },
     profilePicture:{
