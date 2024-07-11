@@ -1,6 +1,20 @@
 const router = require("express").Router();
 const School = require("../models/School");
+const multer = require('multer');
+const path = require('path');
 
+
+// Configure multer for keeping files
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'schools/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const school = multer({ storage: storage });
 
 // get all schools
 router.get("/", async (req, res) => {
@@ -15,10 +29,20 @@ router.get("/", async (req, res) => {
 // get a school
 router.get("/:id", async (req, res) => {
     try {
+        // verification of the Id
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: "Invalid ID" });
+        }
+
         const school = await School.findById(req.params.id);
-        res.status(200).json({ message: "Here is the school", school: school });
+
+        if (!school) {
+            return res.status(404).json({ message: "No school found" });
+        }
+
+        res.status(200).json({ message: "Her the School", school: school });
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ message: "Internal server Error", error: error });
     }
 });
 
