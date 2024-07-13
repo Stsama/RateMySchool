@@ -19,7 +19,7 @@ passport.use(
         username: profile.displayName,
         email: profile.emails[0].value,
         password: await bcrypt.hash(profile.id, 10),
-        profileImage: profile.photos[0].values,
+        profilePicture: profile.photos[0].values,
       };
 
       try {
@@ -95,12 +95,15 @@ router.get("/", (req, res) => {
 
 // register from the form
 router.post("/register", async (req, res) => {
-  if (!req.body.email || !req.body.password || !req.body.username) {
+  if (!req.body.email || !req.body.password || !req.body.username || !req.body.password2) {
     res.status(400).json({ message: "Please fill all the fields!" });
   }
-
+  
   if (req.body.password && req.body.password.length < 5) {
     res.status(400).json({ message: "Password must be at least 5 characters long!" });
+  }
+  if (req.body.password !== req.body.password2) {
+    res.status(400).json({ message: "Passwords do not match!" });
   }
   if (req.body.username && (req.body.username.length < 3 || req.body.username.length > 30)) {
     res.status(400).json({ message: "Username must be between 3 and 30 characters long!" });
@@ -113,12 +116,12 @@ router.post("/register", async (req, res) => {
     if (req.body.password && req.body.username && req.body.email) {
       const newUser = await new User({
         username: req.body.username,
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         password: hashedPassword,
       });
       // save user and respond
       const savedUser = await newUser.save();
-      res.status(200).json({ message: "User created successfully!", user: savedUser });
+      res.status(200).json({ message: "User created successfully!", user: savedUser.email });
     }
   } catch (err) {
     res.status(400).json({ message: err });
@@ -136,7 +139,7 @@ router.post("/login", async (req, res) => {
       if (!req.body.email || !req.body.password) {
         res.status(400).json({ message: "Please fill all the fields!" });
       }
-      if (req.body.password && req.body.email) {
+      if (req.body.password && req.body.email.toLowerCase()) {
         const user = await User.findOne({
           email: req.body.email,
         });
@@ -151,7 +154,7 @@ router.post("/login", async (req, res) => {
           res.status(404).json({ message: "Wrong Credentials!" });
         }
         req.session.user = user;
-        res.status(200).json({ message: "You are logged in!", user: user });
+        res.status(200).json({ message: "You are logged in!", user: user.email });
       }
     } catch (error) {
       console.log(error);

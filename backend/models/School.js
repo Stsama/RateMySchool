@@ -21,11 +21,13 @@ const SchoolSchema = new mongoose.Schema({
     },
     location: {
         type: String,
+        required: true,
         min: 3,
         max: 50,
     },
     phoneNumber: {
         type: Number,
+        required: true,
         min: 7
     },
     description: {
@@ -57,10 +59,7 @@ const SchoolSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    schoolImages: {
-        type: Array,
-        default: []
-    }
+    thumbnail: {type: String, required: true},
 }, { timestamps: true });
 
 

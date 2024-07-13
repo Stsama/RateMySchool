@@ -3,11 +3,14 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const upload = require('express-fileupload');
 const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 const app = express();
 const session = require('express-session');
 const passport = require('passport')
+const path = require('path')
+const fs = require('fs');
 
 // port 
 const port = process.env.PORT || 3000;
@@ -15,7 +18,7 @@ const port = process.env.PORT || 3000;
 // routes
 const userRoute = require('./routes/users')
 const authRoute = require('./routes/auth')
-const contactRoute = require('./routes/contact')
+const contactRoute = require('./routes/contacts')
 const schoolRoute = require('./routes/schools')
 
 
@@ -43,6 +46,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan("common"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(cors());
+app.use(upload());
+
 
 
 
@@ -50,7 +57,7 @@ app.use(morgan("common"));
 
 app.use('/api/v1/users', userRoute)
 app.use('/api/v1/auth', authRoute)
-app.use(contactRoute)
+app.use('/contact', contactRoute)
 app.use('/api/v1/schools', schoolRoute)
 
 app.listen(port, () => {

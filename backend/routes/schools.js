@@ -1,89 +1,179 @@
 const router = require("express").Router();
 const School = require("../models/School");
-const multer = require('multer');
+const { v4: uuid } = require('uuid');
 const path = require('path');
+const fs = require('fs');
 
+// create a new school with images
+router.post("/", async (req, res) => {
+    if (req.session.user) {
+        const newSchool = {};
+        if (!req.files) {
+            return res.status(400).json({ message: 'Please upload an image' });
+        } else {
+            if (req.files.thumbnail) {
+                const file = req.files.thumbnail;
+                if (file.size > 2000000) {
+                    return res.status(400).json({ message: 'Image size should not exceed 2MB' });
+                }
+                let fileName = file.name;
+                let splitedName = fileName.split('.');
+                let newFileName = splitedName[0] + uuid() + '.' + splitedName[splitedName.length - 1];
+                file.mv(path.join(__dirname, '../uploads', newFileName), async (err) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'The file was not uploaded!' });
+                    }
+        
+                });
+                newSchool.thumbnail = newFileName;
+            }
+        }
+        if (!req.body.name || !req.body.address || !req.body.location || !req.body.phoneNumber || !req.body.description) {
+            return res.status(400).json({ message: 'Fill the required fields' });
+        }
 
-// Configure multer for keeping files
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'schools/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        const userId = req.session.user._id;
+        const { name, address, location, phoneNumber, description } = req.body;
+        newSchool.name = name;
+        newSchool.address = address;
+        newSchool.location = location;
+        newSchool.phoneNumber = phoneNumber;
+        newSchool.description = description;
+        newSchool.owner = userId;
+
+        await new School(newSchool).save();
+        res.status(200).json({ message: 'School created successfully!' });
+        
+
+        // try {
+        //     let { name, address, location, phoneNumber, description, successRate, reviews, likes, dislikes, trainings} = req.body;
+        //     if (!name || !address || !location || !phoneNumber || !description) {
+        //         return res.status(400).json({ message: 'Fill the required fields' });
+        //     }
+        //     let thumbnail = req.files[0];
+        //     const userId = req.session.user._id;
+        //     if (thumbnail.size > 2000000) {
+        //         return res.status(400).json({ message: 'Image size should not exceed 2MB' });
+        //     }
+        //     let fileName = thumbnail.name;
+        //     let splitedName = fileName.split('.');
+        //     let newFileName = splitedName[0] + UUID() + '.' + splitedName[splitedName.length - 1];
+        //     thumbnail.mv(path.join(__dirname, '..', 'SchoolImages', newFileName), async (error) => {
+        //         if (error) {
+        //             return res.status(400).json({ message: error.message });
+        //         } else {
+        //             const newSchool = new School({
+        //                 name,
+        //                 address,
+        //                 location,
+        //                 phoneNumber,
+        //                 description,
+        //                 successRate,
+        //                 reviews,
+        //                 likes,
+        //                 dislikes,
+        //                 trainings,
+        //                 thumbnail: newFileName,
+        //                 owner: userId
+        //             });
+        //             await newSchool.save();
+        //             if (!newSchool) {
+        //                 return res.status(400).json({ message: 'Error creating school' });
+        //             }
+        //             res.status(200).json({ message: 'School created successfully!', newSchool });
+        //         }    
+        //     });
+        // } catch (error) {
+        //     res.status(400).json({ message: error.message });
+        // }
+            
+    } else {
+        res.status(403).json({ message: 'You are not logged in!' });
     }
 });
 
-const school = multer({ storage: storage });
-
 // get all schools
+
 router.get("/", async (req, res) => {
     try {
         const schools = await School.find();
-        res.status(200).json({ message: "Here are all the schools", [schools]});
+        res.status(200).json({message: 'Schools fetched successfully!', schools});
     } catch (error) {
-        res.status(500).json(error);
+        res.status(400).json({ message: error.message });
     }
 });
 
-// get a school
+
+// get a school by ID
 router.get("/:id", async (req, res) => {
     try {
-        // verification of the Id
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ message: "Invalid ID" });
-        }
-
         const school = await School.findById(req.params.id);
-
-        if (!school) {
-            return res.status(404).json({ message: "No school found" });
-        }
-
-        res.status(200).json({ message: "Her the School", school: school });
+        res.status(200).json({ message: 'School fetched successfully!', school });
     } catch (error) {
-        res.status(500).json({ message: "Internal server Error", error: error });
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// update a school by ID
+router.put("/:id", school.array('images', 5),  async (req, res) => {
+    if (req.session.user) {
+        try {
+            const school = await School.findById(req.params.id);
+            if (school.owner == req.session.user._id) {
+                if (req.body.name && req.body.address && req.body.location && req.body.phoneNumber && req.body.description) {
+                    newSchoolData = JSON.parse(JSON.stringify(req.body));
+                    if (req.files.length > 0) {
+                        const fileUrls = req.files.map(file => ({
+                            filename: file.filename,
+                            url: `${req.protocol}://${req.get('host')}/SchoolImages/${userId}/${file.filename}`
+                        }));
+                        newSchoolData.images = fileUrls;
+                        const oldImages = school.images;
+                        if (oldImages && oldImages.length > 0) {
+                            oldImages.forEach(image => {
+                                fs.unlinkSync(path.join(__dirname, '..', 'SchoolImages', userId, image.filename));
+                            });
+                        }
+                    }
+                    await School.findByIdAndUpdate(req.params.id, newSchoolData, {new: true});
+                    res.status(200).json({ message: 'School updated successfully!' });
+                }
+            } else {
+                res.status(403).json({ message: 'You are not authorized to update this school!' });
+            }
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    } else {
+        res.status(403).json({ message: 'You are not logged in Yezt !!!' });
     }
 });
 
 
-// delete a school
+// delete a school by ID
 router.delete("/:id", async (req, res) => {
     if (req.session.user) {
-        school = await School.findById(req.params.id);
-        if (school) {
-            if (req.session.user.isAdmin || req.session.user._id === school.owner) {
-                const school = await School.findByIdAndDelete(req.params.id);
-                res.status(200).json({ message: "School has been deleted!", school: school });
+        try {
+            const school = await School.findById(req.params.id);
+            if (school.owner == req.session.user._id || req.session.user.isAdmin) {
+                const oldImages = school.images;
+                if (oldImages && oldImages.length > 0) {
+                    oldImages.forEach(image => {
+                        fs.unlinkSync(path.join(__dirname, '..', 'SchoolImages', userId, image.filename));
+                    });
+                }
+                await School.findByIdAndDelete(req.params.id);
+                res.status(200).json({ message: 'School deleted successfully!' });
             } else {
-                res.status(401).json({ message: "You can delete only your school!" });
+                res.status(403).json({ message: 'You are not authorized to delete this school!' });
             }
-        } else {
-            res.status(404).json({ message: "School not found!" });
+        } catch (error) {
+            res.status(400).json({ message: error.message });
         }
     } else {
-        res.status(401).json({ message: "You are not logged in!" });
+        res.status(403).json({ message: 'You are not logged in!' });
     }
 });
 
 
-// update a school
-router.put("/:id", async (req, res) => {
-    if (req.session.user) {
-        school = await School.findById(req.params.id);
-        if (school) {
-            if (req.session.user._id === school.owner) {
-                const updatedSchool = await School.findByIdAndUpdate(req.params.id, { $set: req.body });
-                res.status(200).json({ message: "School has been updated!", school: updatedSchool });
-            } else {
-                res.status(401).json({ message: "You can update only your school!" });
-            }
-        } else {
-            res.status(404).json({ message: "School not found!" });
-        }
-    } else {
-        res.status(401).json({ message: "You are not logged in!" });
-    }
-});
-
-// create a school
+module.exports = router;
