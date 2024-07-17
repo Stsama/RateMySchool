@@ -15,8 +15,8 @@
 
     --transition: all 300ms ease;
 
-    --container-width-lg: 84%;
-    --container-wwidth-md: 92%;
+    --container-width-lg: 82%;
+    --container-wwidth-md: 94%;
     --form-width: 50%;
 
     --raduis-1: 0.3rem;
@@ -63,20 +63,20 @@ h1, h2, h3, h4, h5, h6{
     line-height: 1.1;
 }
 h1{
-    font-size: 2.2rem;
+    font-size: 1.8rem;
 }
 h2{
-    font-size: 1.9rem;
+    font-size: 1.5rem;
 }
 h3{
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     line-height: 1.25;
 }
 h4{
-    font-size: 1.1rem;
+    font-size: 0.8rem;
 }
 h5{
-    font-size: 1rem;
+    font-size: 0.5rem;
     line-height: 1.4rem;
 }
 
@@ -92,10 +92,10 @@ section{
 .btn{
     display: inline-block;
     width: fit-content;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     border-radius: var(--raduis-2);
     background: var(--color-white);
-    font-weight: 500;
+    font-weight: 450;
     cursor: pointer;
     transition: var(--transition);
 }
@@ -108,8 +108,8 @@ section{
 .btn.category{
     background: var(--color-gb);
     color: var(--color-primary);
-    font-size: 0.75rem;
-    font-weight: 400;
+    font-size: 0.70rem;
+    font-weight: 450;
 }
 
 .btn.sm{
@@ -145,7 +145,7 @@ section{
 /* =======================Navbar============================== */
 nav{
     width: 100vw;
-    height: 5rem;
+    height: 4rem;
     display: grid;
     place-items: center;
     background: var(255, 225, 255, 0.5);
@@ -166,7 +166,7 @@ nav{
 }
 
 .nav__logo{
-    width: 3rem;
+    width: 2.5rem;
     display: block;
 }
 
@@ -177,7 +177,7 @@ nav{
 
 .nav__menu{
     display: flex;
-    gap: 3rem;
+    gap: 2.8rem;
     align-items: center;
 }   
 
@@ -226,13 +226,13 @@ footer{
 
 .posts__container{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 2fr);
     gap: 4rem;
 }
 
 .post{
     background: var(--color-white);
-    padding: 1rem;
+    padding: 0.8rem;
     border-radius: var(--raduis-4);
     padding-bottom: 2rem;
     transition: var(--transition);
@@ -249,17 +249,17 @@ footer{
     overflow: hidden;
 }
 .post__content{
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 .post__content h3{
-    margin: 1rem 0 0.6rem;
+    margin: 0.5rem 0 0.3rem;
 }
 
 .post__footer{
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 .post_author{
     display: flex;
@@ -267,7 +267,7 @@ footer{
     align-items: flex-start;
 }
 .post__author-avatar{
-    width: 2.5rem;
+    width: 2.3rem;
     border-radius: var(--raduis-2);
     overflow: hidden;
     aspect-ratio: 1/1;
@@ -279,7 +279,7 @@ footer{
     width: var(--form-width);
     background: var(--color-white);
     margin-inline: auto;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
 }
 
 .post-detail__header{
@@ -336,7 +336,7 @@ input, select, textarea{
     width: var(--form-width);
     margin-inline: auto;
     padding: 2rem 0;
-    height: calc(100vh - 12rem);
+    /* height: calc(100vh - 12rem); */
     display: grid;
     place-items: center;
 }
@@ -408,7 +408,7 @@ input, select, textarea{
 }
 
 .avatar__wrapper{
-    width: 15rem;
+    width: 11rem;
     aspect-ratio: 1/1;
     position: relative;
     margin-inline: auto;
@@ -435,8 +435,8 @@ input, select, textarea{
     color: var(--color-white);
     font-size: 1rem;
     position: absolute;
-    right: 1.1rem;
-    bottom: 4rem;
+    right: 0rem;
+    bottom: 3rem;
     width: 2.7rem;
     height: 2.7rem;
     display: grid;
@@ -496,3 +496,133 @@ input, select, textarea{
 }
 
 
+/* ===========================Responsive Design====================== */
+
+@media screen and (max-width: 1000px) {
+    .footer__categories{
+        flex-direction: column;
+        gap: 2rem;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    h1{
+        font-size: 1.5rem;
+    }
+    h2{
+        font-size: 1.2rem;
+    }
+    h3{
+        font-size: 1rem;
+    }
+    .container{
+        width: var(--container-wwidth-md);
+    }
+    /* Navbar */
+    .nav__container{
+        position: relative;
+    }
+    .nav__menu{
+        position: absolute;
+        top: 4rem;
+        right: 0;
+        flex-direction: column;
+        gap: 1rem;
+        background: var(--color-white);
+        padding: 1rem;
+    }
+    .nav__menu li{
+        width: 100%;
+        box-shadow: -2rem 4rem 4rem rgba(0, 0, 0, 0.26);
+        border-top: 2px solid var(--color-gray-300);
+        animation: dropDown 500ms ease forwards;
+        opacity: 0;
+        transform: rotateX(90deg);
+        transform-origin: top;
+    }
+    .nav_menu li a{
+        display: block;
+        background: var(--color-gray-200);
+        padding: 0.85rem 2.5rem;
+    }
+
+    @keyframes dropDown{
+        to {
+            opacity: 1;
+            transform: rotateX(0);
+        }
+        
+    }
+    .nav__menu li:nth-child(2){
+        animation-delay: 300ms;
+    }
+    .nav__menu li:nth-child(3){
+        animation-delay: 600ms;
+    }
+    .nav__menu li:nth-child(4){
+        animation-delay: 900ms;
+    }
+
+    .nav__toggle-btn{
+        display: inline-block;
+        background: transparent;
+        font-size: 1.5rem;
+        cursor: pointer;
+
+    }
+    
+
+
+    .nav__toggle-btn{
+        display: inline-block;
+        background: transparent;
+        font-size: 1.5rem;
+        cursor: pointer;
+
+    }
+
+    .posts__container{
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .footer__categories{
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .post-detail{
+        width: 100%;
+        background: transparent;
+        padding: 0;
+    }
+
+    .post-detail h1 {
+        font-size: 1.3rem;
+    }
+
+    .register, .login, .create-post{
+        width: 100%;
+        padding: 1rem;
+    }
+    .form.profile__form{
+        width: 100%;
+        margin-top: 2rem;
+    }
+    .authors__container{
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .dashboard__post{
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    .dashboard__post-info{
+        /* flex-direction: column; */
+        gap: 1.5rem;
+    }
+    .dashboard__post-thumbnail{
+        width: 100%;
+        height: 5rem;
+    }
+}
