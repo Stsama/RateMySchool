@@ -10,8 +10,8 @@ const SingleSchool = () => {
             <div className="post-detail__header">
                 <SchoolOwner/>
                 <div className="post-detail__buttons">
-                    <Link to="/schools/:id/edit" className="btn sm primary">Edit</Link>
-                    <Link to="/schools/:id" className="btn sm danger">Delete</Link>
+                    <Link to="/schools/werwer/edit" className="btn sm primary">Edit</Link>
+                    <Link to="/schools/werwer/delete" className="btn sm danger">Delete</Link>
                 </div>
             </div>
             <h1>This is the  School Name</h1>

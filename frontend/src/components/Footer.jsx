@@ -5,11 +5,10 @@ const Footer = () => {
   return (
     <footer>
       <ul className="footer__categories">
-        <li> <Link to='/schools'>All Schools</Link> </li>
-        <li> <Link to='/create'>Add School</Link> </li>
-        <li> <Link to='/search'>Search</Link> </li>
-        <li> <Link to='/login'>Login</Link> </li>
-        <li> <Link to='/register'>Register</Link> </li>
+        <li> <Link to='/schools/categories/Middle_School'>Middle School</Link> </li>
+        <li> <Link to='/schools/categories/Elementary_School'>Elementary School</Link> </li>
+        <li> <Link to='/schools/categories/High_School'>High School</Link> </li>
+        <li> <Link to='/schools/categories/primary_School'>Primary School</Link> </li>
       </ul>
       <div className="footer__copyright">
         <small>All Right Reserved &copy; Copyright, EZOULA Albert@2024</small>

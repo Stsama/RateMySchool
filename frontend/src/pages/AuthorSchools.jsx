@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Data from '../data'
+import {DUMMY_SCHOOLS} from '../data'
 import SchoolItem from '../components/SchoolItem'
 
 const AuthorSchools = () => {
@@ -7,7 +7,7 @@ const AuthorSchools = () => {
 
   return (
     <section className='author__posts'>
-        {schools.length > 0 ? <div className="container author__posts-container">
+        {schools.length > 0 ? <div className="container posts__container">
             {
                 schools.map(({id, name, address, category, location, phoneNumber, description, thumbnail, owner}) => 
                 <SchoolItem key={id} schoolId={id} name={name} category={category} address={address} location={location} phoneNumber={phoneNumber} 
