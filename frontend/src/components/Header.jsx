@@ -14,7 +14,7 @@ const Header = () => {
                 <img src={service} alt="RateMySchool" />
             </Link>
             <ul className='nav__menu'>
-                <li><Link to="/profile">Albert Ezoula</Link></li>
+                <li><Link to="/profile/sesese">Albert Ezoula</Link></li>
                 <li><Link to="/create">Add School</Link></li>
                 <li><Link to="/schools">Schools</Link></li>
                 <li><Link to="/logout">Logout</Link></li>

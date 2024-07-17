@@ -19,7 +19,7 @@ const Login = () => {
         <h2>Login</h2>
         <form className="form login__form">
           <p className="form__error-message">This is an error message</p>
-          <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} />
+          <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} autoFocus />
           <input type="password" placeholder='Enter your password'name='password' value={userData.password} onChange={chanceInputHandler} />
           <button className='btn primary'>Login</button>
         </form>
