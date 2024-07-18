@@ -4,6 +4,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const errorHandler = require('../middleware/errorHandler');
 
 // passport middleware
 passport.use(
@@ -64,7 +65,7 @@ router.get("/google-logout", (req, res) => {
       console.log(error);
       res.json({ message: "Error when loggin out " });
     } else {
-      res.redirect("/");
+      res.redirect("/login");
     }
   });
 });
@@ -94,37 +95,38 @@ router.get("/", (req, res) => {
 
 
 // register from the form
-router.post("/register", async (req, res) => {
-  if (!req.body.email || !req.body.password || !req.body.username || !req.body.password2) {
-    res.status(400).json({ message: "Please fill all the fields!" });
-  }
-  
-  if (req.body.password && req.body.password.length < 5) {
-    res.status(400).json({ message: "Password must be at least 5 characters long!" });
-  }
-  if (req.body.password !== req.body.password2) {
-    res.status(400).json({ message: "Passwords do not match!" });
-  }
-  if (req.body.username && (req.body.username.length < 3 || req.body.username.length > 30)) {
-    res.status(400).json({ message: "Username must be between 3 and 30 characters long!" });
-  }
-  try {
-    // harsh the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    // create new user
-    if (req.body.password && req.body.username && req.body.email) {
-      const newUser = await new User({
-        username: req.body.username,
-        email: req.body.email.toLowerCase(),
-        password: hashedPassword,
-      });
-      // save user and respond
-      const savedUser = await newUser.save();
-      res.status(200).json({ message: "User created successfully!", user: savedUser.email });
+router.post("/register", async (req, res, next) => {
+  try{
+    const { username, email, password, password2 } = req.body;
+    if (!username || !email || !password || !password2) {
+      return res.status(400).json({ message: "Please fill all the fields!" });
     }
-  } catch (err) {
-    res.status(400).json({ message: err });
+    const newEmail = email.toLowerCase();
+    // check if the user already exists
+    const emailExists = await User.findOne({ email: newEmail });
+    if (emailExists) {
+      return res.status(400).json({ message: "Email already exists!" });
+    }
+    // password length
+    if (password.length < 5 || password2.length < 5) {
+      return res.status(400).json({ message: "Password must be at least 5 characters long" });
+    }
+    // password match
+    if (password !== password2) {
+      return res.status(400).json({ message: "Passwords do not match!" });
+    }
+    // hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = new User({
+      username,
+      email: newEmail,
+      password: hashedPassword,
+    });
+    await newUser.save();
+    return res.status(200).json({ message: "You are registered!" });
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -132,29 +134,29 @@ router.post("/register", async (req, res) => {
 // login from the form
 router.post("/login", async (req, res) => {
   if (req.session.user) {
-    res.status(200).json({ message: "You are already logged in!"});
+    return res.status(200).json({ message: "You are already logged in!"});
     // res.status(200).json(req.session.user);
   } else {
     try {
       if (!req.body.email || !req.body.password) {
-        res.status(400).json({ message: "Please fill all the fields!" });
+        return res.status(400).json({ message: "Please fill all the fields!" });
       }
       if (req.body.password && req.body.email.toLowerCase()) {
         const user = await User.findOne({
           email: req.body.email,
         });
         if (!user) {
-          res.status(400).json({ message: "Wrong Credentials!" });
+          return res.status(400).json({ message: "Wrong Credentials!" });
         }
         const validPassword = await bcrypt.compare(
           req.body.password,
           user.password
         );
         if (!validPassword) {
-          res.status(404).json({ message: "Wrong Credentials!" });
+          return res.status(404).json({ message: "Wrong Credentials!" });
         }
         req.session.user = user;
-        res.status(200).json({ message: "You are logged in!", user: user.email });
+        return res.status(200).json({ message: "You are logged in!", email: user.email, name: user.username });
       }
     } catch (error) {
       console.log(error);
@@ -168,9 +170,9 @@ router.get("/form-logout", (req, res) => {
   req.session.destroy((error) => {
     if (error) {
       console.log(error);
-      res.send({ message: "Error when loggin out " });
+      res.status(400).send({ message: "Error when loggin out " });
     } else {
-      res.redirect("/api/v1/auth");
+      res.status(200).send({ message: "You are logged out!" });
     }
   });
 });

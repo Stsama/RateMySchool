@@ -33,12 +33,13 @@ router.post("/", async (req, res) => {
         }
 
         const userId = req.session.user._id;
-        const { name, address, location, phoneNumber, description } = req.body;
+        const { name, address, location, phoneNumber, description, category } = req.body;
         newSchool.name = name;
         newSchool.address = address;
         newSchool.location = location;
         newSchool.phoneNumber = phoneNumber;
         newSchool.description = description;
+        newSchool.category = category || "Uncategorized";
         newSchool.owner = userId;
 
         await new School(newSchool).save();
@@ -106,17 +107,13 @@ router.put("/:id",  async (req, res) => {
                 }
                 if (req.body) {
                     try {
-                        const { name, address, location, phoneNumber, description, successRate, reviews, likes, dislikes, trainings } = req.body;
+                        const { name, address, location, phoneNumber, description, category } = req.body;
                         updatedSchool.name = name || school.name;
                         updatedSchool.address = address || school.address;
                         updatedSchool.location = location || school.location;
                         updatedSchool.phoneNumber = phoneNumber || school.phoneNumber;
                         updatedSchool.description = description || school.description;
-                        updatedSchool.successRate = successRate || school.successRate;
-                        updatedSchool.reviews = reviews || school.reviews;
-                        updatedSchool.likes = likes || school.likes;
-                        updatedSchool.dislikes = dislikes || school.dislikes;
-                        updatedSchool.trainings = trainings || school.trainings;
+                        updatedSchool.category = category || school.category;
                     } catch (error) {
                         console.log(error);
                     }

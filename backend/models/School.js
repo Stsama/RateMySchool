@@ -36,6 +36,10 @@ const SchoolSchema = new mongoose.Schema({
         min: 10,
         max: 500
     },
+    category: {
+        type: String,
+        default: "Uncategorized"  
+    },
     successRate: [
         info = {
             year: { type: String },

@@ -47,7 +47,25 @@ router.put('/', async (req, res) => {
                 req.body.password = await bcrypt.hash(req.body.password, salt);
             }
             try {
-                const { username, email, phoneNumber, password } = req.body;
+                const { username, email, phoneNumber, password, password2 } = req.body;
+                if (password !== password2) {
+                    res.status(400).json({ message: "New passwords do not match!" });
+                }
+
+                // check if the user already exists
+                const user = await User.findOne({ email: email });
+                if (user) {
+                    res.status(400).json({ message: "Email already exists!" });
+                }
+
+                const validPassword = bcrypt.compare(
+                    password,
+                    password2
+                );
+                if (!validPassword) {
+                    res.status(400).json({ message: "New passwords are not the same" });
+                }
+                // update the user's data
                 newUserData.username  = username || user.username;
                 newUserData.email  = email || user.email;
                 newUserData.phoneNumber  = phoneNumber || user.phoneNumber;

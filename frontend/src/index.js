@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
+import UserProvider  from './context/userContext.js';
 import Layout from './components/Layout';
 import ErrorPage from './pages/ErrorPage';
 import Home from './pages/Home';
@@ -20,10 +20,11 @@ import AuthorSchool from './pages/AuthorSchools';
 import Authors from './pages/Authors';
 
 
+
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout/>,
+    element: <UserProvider><Layout/></UserProvider>,
     errorElement: <ErrorPage/>,
     children : [
       {index: true, element: <Home/>},
