@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
   const [userData, setUserData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
@@ -26,6 +27,8 @@ const Register = () => {
           <button className='btn primary'>Sign Up</button>
         </form>
         <small>Already have an account? <Link to='/login'>Sign In</Link> </small>
+        <p className="center">Or</p>
+        <Link to='/google' className='btn primary'><FcGoogle /> Sign Up with google</Link>
       </div>
     </section>
   )
