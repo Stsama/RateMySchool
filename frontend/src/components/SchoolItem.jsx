@@ -4,12 +4,12 @@ import SchoolOwner from './SchoolOwner'
 
 
 
-const SchoolItem = ({schoolId, name, address, location, phoneNumber,  category, thumbnail, description, AuthorID}) => {
-  const shortDescription = description.length > 50 ? description.substr(0, 50) + '...' : description;
+const SchoolItem = ({schoolId, name, address, location, phoneNumber,  category, thumbnail, description, owner, createdAt}) => {
+  const shortDescription = description.length > 100 ? description.substr(0, 100) + '...' : description;
   return (
     <article className="post">
         <div className="post__thumbnail">
-            <img src={thumbnail} alt={name} />
+        <img src={`${process.env.REACT_APP_ASSETS_URL}/${thumbnail}`} alt="" />
         </div>
         <div className="post__content">
             <Link to={`/schools/${schoolId}`} >
@@ -17,7 +17,7 @@ const SchoolItem = ({schoolId, name, address, location, phoneNumber,  category, 
             </Link>
             <p>{shortDescription}</p>
             <div className="post__footer">
-              <SchoolOwner/>
+              <SchoolOwner owner={owner} createdAt={createdAt}/>
               <Link to={`/schools/categories/${category}`} className='btn category'> {category} </Link>
             </div>
         </div>

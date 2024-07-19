@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { UserContext } from '../context/userContext'
+import { useNavigate } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
@@ -10,6 +12,20 @@ const EditSchool = () => {
   const [owner, setOwner] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [thumbnail, setThumbnail] = useState('')
+
+  const navigate = useNavigate()
+
+  const {currentUser } = useContext(UserContext)
+  const token = currentUser?.id
+
+  // redirect user to login page if not logged in
+  useEffect(() => {
+    if(!token) { 
+      navigate('/login')
+    }
+  })
+
+
 
   const modules = {
     toolbar: [

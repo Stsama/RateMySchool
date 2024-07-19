@@ -1,8 +1,25 @@
-import React, { useState} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { UserContext } from '../context/userContext'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { DUMMY_SCHOOLS } from '../data'
 
 const Dashboard = () => {
+
+
+
+  const navigate = useNavigate()
+
+  const {currentUser } = useContext(UserContext)
+  const token = currentUser?.id
+
+  // redirect user to login page if not logged in
+  useEffect(() => {
+    if(!token) { 
+      navigate('/login')
+    }
+  })
+
   const [schools, setSchool] = useState(DUMMY_SCHOOLS)
   return (
     <section className="dashboard">

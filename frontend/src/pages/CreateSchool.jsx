@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { UserContext } from '../context/userContext'
+import { useNavigate } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
@@ -10,6 +12,17 @@ const CreateSchool = () => {
   const [owner, setOwner] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [thumbnail, setThumbnail] = useState('')
+  const navigate = useNavigate()
+
+  const {currentUser } = useContext(UserContext)
+  const token = currentUser?.id
+
+  // redirect user to login page if not logged in
+  useEffect(() => {
+    if(!token) { 
+      navigate('/login')
+    }
+  })
 
   const modules = {
     toolbar: [
@@ -43,7 +56,7 @@ const CreateSchool = () => {
           <input type="text" placeholder='Enter school location' name='location' value={location} onChange={e => setLocation(e.target.value)}/>
           <input type="text" placeholder='Enter school Owner' name='owner' value={owner} onChange={e => setOwner(e.target.value)}/>
           <input type="tel" placeholder='Enter school phone number' name='phoneNumber' value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}/>
-          <input type="file" onChange={e => setThumbnail(e.target.files[0])} accept='png, jpg, jpeg'/>
+          <input type="file" name='thumbnail' onChange={e => setThumbnail(e.target.files[0])} accept='png, jpg, jpeg'/>
           <ReactQuill theme='snow' value={description} onChange={setDescription} modules={modules} formats={formats} placeholder='Enter school description' />
           <button type='submit' className='btn primary'>Create school</button>
         </form>

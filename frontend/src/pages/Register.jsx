@@ -29,7 +29,7 @@ const Register = () => {
       // return;
     }
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/register`, userData);
+      const response = await axios.post(`http://localhost:5000/api/auth/register`, userData);
       if (response && response.data) {
         const newUser = response.data;
         console.log(newUser);
@@ -62,7 +62,7 @@ const Register = () => {
         </form>
         <small>Already have an account? <Link to='/login'>Sign In</Link> </small>
         <p className="center">Or</p>
-        <Link to='/google' className='btn primary'><FcGoogle /> Sign Up with google</Link>
+        <Link to={`${process.env.REACT_APP_BASE_URL}/auth/google`} className='btn primary'><FcGoogle /> Sign Up with google</Link>
       </div>
     </section>
   )

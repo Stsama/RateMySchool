@@ -1,31 +1,57 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useEffect, useState} from 'react'
+import { Link, useParams } from 'react-router-dom'
 import SchoolOwner from '../components/SchoolOwner'
-import Thumbnail from '../images/slider-1.jpg'
+import { UserContext } from '../context/userContext'
+import DeleteSchool from './DeleteSchool'
+import axios from 'axios'
+import Loader from '../components/Loader'
 
 const SingleSchool = () => {
+
+  const { id } = useParams()
+  const [school, setSchool] = useState(null)
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  
+ const {currentUser} = useContext(UserContext)
+  useEffect(() => {
+    const getSchool = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/v1/schools/${id}`);
+        // const response = await axios.get(`http://localhost:5000/api/v1/schools/${ id }`);
+        setSchool(response?.data);
+      } catch (error) {
+
+
+      }
+      setIsLoading(false);
+    }
+    getSchool();
+  }, [])
+
+
+ if (isLoading) {
+  return <Loader/>
+ }
+
   return (
     <section className="post-detail">
-        <div className="container post-detail__container">
+        {error && <p className="error">{error}</p> } 
+        {school && <div className="container post-detail__container">
             <div className="post-detail__header">
-                <SchoolOwner/>
-                <div className="post-detail__buttons">
-                    <Link to="/schools/werwer/edit" className="btn sm primary">Edit</Link>
-                    <Link to="/schools/werwer/delete" className="btn sm danger">Delete</Link>
-                </div>
+                <SchoolOwner ownerID={school.owner} createdAt={school.createdAt}/>
+                {currentUser?.id === school?.owner && <div className="post-detail__buttons">
+                    <Link to={`/schools/${school.id}/edit`} className="btn sm primary">Edit</Link>
+                    <DeleteSchool schoolId={id}/>
+                </div>}
             </div>
-            <h1>This is the  School Name</h1>
+            <h1>{school.name}</h1>
             <div className="post-detail__thumbnail">
-                <img src={Thumbnail} alt="School Name" />
+                <img src={`${process.env.REACT_APP_ASSETS_URL}/${school.thumbnail}`} alt="School Name" />
             </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti libero tenetur, error nam nemo voluptatibus. Neque debitis cupiditate eius, ducimus rerum voluptatum? Blanditiis, eos? Perferendis tempore fugit nobis omnis veniam error minus ipsa veritatis reiciendis? Id adipisci quaerat eum quibusdam!
-            </p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui impedit voluptatibus vitae voluptates, culpa laborum fugit neque minus? Eos, deleniti. Sapiente in pariatur repellat dolore maxime voluptas sint maiores iure quos necessitatibus officiis perspiciatis ad est recusandae, excepturi eius aliquam odit? Voluptatum, illum. Animi reprehenderit culpa quaerat quae, quos eveniet odio magnam libero incidunt voluptatibus in nisi, laborum aliquid, magni harum? Incidunt dignissimos explicabo reprehenderit, eum repellat illo officia eaque enim aspernatur, veritatis aperiam, illum repellendus cupiditate rerum esse doloremque minus accusamus alias corrupti in repudiandae. Recusandae deserunt iusto voluptates vero! Pariatur consequuntur, delectus officia corporis totam fuga distinctio dicta ab expedita repudiandae impedit inventore, obcaecati debitis praesentium earum maiores nulla.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto obcaecati voluptatum temporibus minima similique voluptatem expedita aut aliquid. Recusandae voluptatibus, nam laboriosam rem quos numquam alias accusamus magni qui laudantium perspiciatis. Aut molestias inventore a ratione quam non impedit eius dignissimos sapiente itaque dolores eveniet quod maxime animi ipsam accusantium necessitatibus, pariatur optio vitae voluptatem blanditiis quaerat, nobis nulla? Sed autem magnam rerum blanditiis repellat voluptates tempora alias accusamus labore quis repellendus illum cum dolorem dolore animi reprehenderit saepe facilis ipsam perspiciatis quibusdam rem, incidunt quia explicabo! Corporis laboriosam non mollitia harum quia cumque eligendi nisi consequuntur est ex. Praesentium eos earum neque ab consequatur blanditiis sequi beatae mollitia aut unde voluptatibus, minus harum aliquid dolorem velit architecto dolor, nemo expedita nihil! Ad, possimus eaque. Rerum ducimus non asperiores praesentium, est accusamus quisquam ipsa. Quam deserunt nisi nihil minima! Eveniet accusantium voluptas aut, debitis laudantium saepe deserunt nesciunt deleniti, incidunt dolores praesentium accusamus, illo cumque magnam error dicta obcaecati consequatur quo. Suscipit dolorem laborum deleniti ullam inventore numquam natus ea quos ipsa, nisi nemo a voluptates fuga possimus tempore, aperiam earum quaerat molestiae est? Quam illum a harum soluta ea nihil aliquam neque placeat. Laboriosam vel officiis ab perferendis earum!</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quibusdam amet voluptatem facilis accusamus ea illum esse sunt perferendis inventore magni expedita sequi aperiam, quaerat quasi. Fugit, tempora nam officia dolorum accusamus veniam magni ab facilis debitis unde atque nobis eum commodi doloremque dolores molestias totam libero iusto voluptates numquam culpa quibusdam molestiae natus. Et laboriosam in illo nisi voluptates modi, mollitia eius, id consequuntur quas porro distinctio quia culpa vitae accusantium, facere possimus perferendis. Pariatur, corrupti. Nihil dolore reprehenderit voluptate molestiae natus cum quos ratione nisi nostrum suscipit praesentium tempora, alias ex quis! Maiores assumenda consequatur corrupti ipsam non officia nulla quas veniam obcaecati molestias, quae possimus blanditiis nemo eveniet magnam eligendi numquam eius rem cum. Eligendi dolorum nesciunt odit quam alias unde reiciendis recusandae. Ipsum inventore doloribus vero iusto! Voluptatibus veritatis nam accusamus tenetur totam reprehenderit, perspiciatis dignissimos vel unde saepe architecto doloremque vero expedita mollitia! Architecto perspiciatis corporis rerum enim, obcaecati porro quos hic molestiae nulla minima ullam quasi maiores qui illum libero possimus aperiam voluptatum provident quas asperiores at, iste repudiandae quibusdam fugit! Ullam omnis nobis cupiditate reiciendis tempora. Totam atque a quibusdam omnis quasi officia, quidem, non ad dolorum eveniet maiores ex ipsam provident inventore libero tempora vitae deleniti doloremque cupiditate accusantium ab possimus. Quae temporibus, nobis adipisci ut repellat velit inventore labore hic dolore sunt optio, veniam deleniti quis eum quidem. Fugiat enim corporis sunt ad fuga non nihil, distinctio rerum eius laboriosam quidem voluptates libero. Odit quia sed autem eos ad repellendus, voluptatum, porro veniam at repellat dignissimos error ipsam dolorem harum! Dignissimos, asperiores id ut harum enim ipsum facilis ipsa iusto aliquam rem dicta. Fuga id quam, vero praesentium at aperiam, nostrum consequatur, quo dolorem deleniti harum? Ipsa blanditiis a nostrum tempora labore dignissimos fugiat asperiores, dolores quasi voluptatibus aspernatur atque eos ea. Tenetur corrupti non distinctio magni aspernatur mollitia, ab, nulla sed reiciendis voluptas officiis quis laborum ipsa illum nisi exercitationem similique deserunt suscipit velit tempora dolore. Quam quae sunt eius non. Magni illo reprehenderit repellat, ea doloribus distinctio quod, odit ipsa, alias minima voluptatum eaque accusantium? Suscipit animi distinctio, natus harum dolore deserunt pariatur esse, accusantium quam ad error ratione. Corrupti rerum, laboriosam nam laborum iure commodi atque alias cupiditate fuga blanditiis qui officia, quod facilis sequi obcaecati placeat aperiam quis et eligendi eius ad hic tenetur beatae pariatur. Porro, vitae? Mollitia, dolore voluptatem ex libero cum distinctio aliquam aut.</p>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Libero delectus atque numquam illo qui ut voluptate iste cumque. Magnam atque ipsum eos corporis cum molestiae?</p>
-        </div>
+            <p dangerouslySetInnerHTML={{__html: school.description}}></p>
+        </div>}
     </section>
   )
 }

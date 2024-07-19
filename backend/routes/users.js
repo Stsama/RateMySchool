@@ -119,4 +119,38 @@ router.get('/profile', async (req, res) => {
     }
 });
 
+
+// get user's data
+router.get('/:id', async (req, res) => {
+    // find the user by id
+    if (req.params.id) {
+        try {
+            const user = await User.findById(req.params.id);
+            return res.status(200).json({
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                phoneNumber: user.get('phoneNumber'),
+                profilePicture: user.get('profilePicture'),         
+            });
+        } catch (error) {
+            return res.status(404).json({ message: 'User not found!' });
+        }
+    } else {
+        return res.status(500).json({ message: 'User not found!' });
+    }
+
+})
+
+
+// get all the users
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find();
+        return res.status(200).json(users);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+})
+
 module.exports = router;

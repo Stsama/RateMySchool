@@ -46,10 +46,10 @@ app.use(passport.session());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(cors());
+// app.use(cors());
 app.use(upload());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 
 // my routes
 
-app.use('/api/v1/users', userRoute)
+app.use('/api/users', userRoute)
 app.use('/api/auth', authRoute)
 app.use('/contact', contactRoute)
 app.use('/api/v1/schools', schoolRoute)

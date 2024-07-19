@@ -156,7 +156,7 @@ router.post("/login", async (req, res) => {
           return res.status(404).json({ message: "Wrong Credentials!" });
         }
         req.session.user = user;
-        return res.status(200).json({ message: "You are logged in!", email: user.email, name: user.username });
+        return res.status(200).json({ message: "You are logged in!", email: user.email, name: user.username, id: user._id });
       }
     } catch (error) {
       console.log(error);

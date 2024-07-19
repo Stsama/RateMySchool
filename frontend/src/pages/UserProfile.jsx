@@ -1,10 +1,26 @@
-import React, {useState} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import { UserContext } from '../context/userContext'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import Avatar from '../images/avatar-1.jpg'
 import { FaEdit } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 
 const UserProfile = () => {
+
+  const navigate = useNavigate()
+
+  const {currentUser } = useContext(UserContext)
+  const token = currentUser?.id
+
+  // redirect user to login page if not logged in
+  useEffect(() => {
+    if(!token) { 
+      navigate('/login')
+    }
+  })
+
+
   const [avatar, setAvatar] = useState(Avatar)
   const [username, setusername] = useState('')
   const [email, setEmail] = useState('')

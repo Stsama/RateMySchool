@@ -55,9 +55,9 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const schools = await School.find();
-        res.status(200).json({message: 'Schools fetched successfully!', schools});
+        return res.status(200).json(schools);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 });
 
@@ -66,9 +66,20 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const school = await School.findById(req.params.id);
-        res.status(200).json({ message: 'School fetched successfully!', school });
+        return res.status(200).json({
+            id: school._id,
+            name: school.name,
+            location: school.location,
+            address: school.address,
+            phoneNumber: school.phoneNumber,
+            description: school.description,
+            category: school.category,
+            thumbnail: school.thumbnail,
+            owner: school.owner,
+            createdAt: school.createdAt    
+        });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 });
 
@@ -154,6 +165,28 @@ router.delete("/:id", async (req, res) => {
         }
     } else {
         res.status(403).json({ message: 'You are not logged in!' });
+    }
+});
+
+
+// get Schools by category
+router.get("/categories/:category", async (req, res) => {
+    try {
+        const schools = await School.find({ category: req.params.category });
+        return res.status(200).json(schools);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+
+// get schools by owners
+router.get("/users/:owner", async (req, res) => {
+    try {
+        const schools = await School.find({ owner: req.params.owner });
+        return res.status(200).json(schools);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 });
 

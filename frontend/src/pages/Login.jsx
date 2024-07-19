@@ -27,7 +27,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/login`, userData);
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/auth/login`, userData);
       const user = await response.data
       setCurrentUser(user);
       navigate('/');
@@ -40,8 +40,8 @@ const Login = () => {
     <section className='login'>
       <div className="container">
         <h2>Login</h2>
-        <form className="form login__form" onSubmit={loginUser}>
-          {error && <p className="form__error-message">{error}</p>}
+        <form className="form login__form" onSubmit={ loginUser }>
+          {error && <p className="form__error-message">{ error }</p>}
           <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} autoFocus />
           <input type="password" placeholder='Enter your password'name='password' value={userData.password} onChange={chanceInputHandler} />
           <button className='btn primary'>Login</button>

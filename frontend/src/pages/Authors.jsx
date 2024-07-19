@@ -1,32 +1,42 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-
-import  Avatar1  from '../images/avatar-1.jpg';
-import  Avatar2  from '../images/avatar-2.JPG';
-import  Avatar3  from '../images/avatar-3.jpg';
+import axios from 'axios'
+import Loader from '../components/Loader'
 
 
-const AuthorsData = [
-  {id: 1, avatar: Avatar1, name: 'John Doe', schools: 1},
-  {id: 2, avatar: Avatar2, name: 'Jane Doe', schools: 2},
-  {id: 3, avatar: Avatar3, name: 'James Doe', schools: 3},
-  {id: 4, avatar: Avatar1, name: 'Joelle Doe', schools: 1},
-  {id: 5, avatar: Avatar2, name: 'Jannelle Doe', schools: 2},
-]
+
 const Authors = () => {
-  const [authors, setAuthors] = useState(AuthorsData)
+  const [authors, setAuthors] = useState([])
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    const fetchAuthors = async () => {
+      setLoading(true)
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/users`)
+        const data = response?.data
+        setAuthors(data)
+      } catch (error) {
+        // console.error(error)
+      }
+      setLoading(false)
+    }
+    fetchAuthors()
+  }, [])
+  if (loading) {
+    <Loader/>
+  }
+
   return (
     <section className="authors">
       {authors.length > 0 ? <div className="container authors__container">
         {
-          authors.map(({id, avatar, name, schools}) => (
-            <Link to={`/authors/users/${id}`} key={id} className='author'>
+          authors.map(({_id: id, profilePicture, username}) => (
+            <Link to={`/schools/users/${id}`} key={id} className='author'>
               <div className="author__avatar">
-                <img src={avatar} alt={name} />
+                <img src={`${process.env.REACT_APP_ASSETS_URL}/${profilePicture}`} alt={username} />
               </div>
               <div className="author__info">
-                <h4>{name}</h4>
-                <p>{schools} Schools</p>
+                <h4>{username}</h4>
               </div>
             </Link>
           ))
