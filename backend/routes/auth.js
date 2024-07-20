@@ -4,7 +4,13 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const errorHandler = require('../middleware/errorHandler');
+// const sessionMiddleware = require('../middleware/sessionMiddleware');
+const MongoStore = require('connect-mongo');
+const JWT = require('jsonwebtoken');
+
+
+
+
 
 // passport middleware
 passport.use(
@@ -155,8 +161,10 @@ router.post("/login", async (req, res) => {
         if (!validPassword) {
           return res.status(404).json({ message: "Wrong Credentials!" });
         }
-        req.session.user = user;
-        return res.status(200).json({ message: "You are logged in!", email: user.email, name: user.username, id: user._id });
+        const {_id: id, username: name} = user;
+        const token = JWT.sign({id, name}, process.env.JWT_SECRET, {expiresIn: '1d'});
+        
+        return res.status(200).json({token, id, name});
       }
     } catch (error) {
       console.log(error);
@@ -167,6 +175,8 @@ router.post("/login", async (req, res) => {
 
 // logout from the form
 router.get("/form-logout", (req, res) => {
+  res.destroy();
+  res.clearCookie('session_id'); // clear cookie
   req.session.destroy((error) => {
     if (error) {
       console.log(error);

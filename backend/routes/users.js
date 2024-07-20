@@ -1,156 +1,132 @@
-const router = require('express').Router()
-const fs = require('fs');
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const path = require('path');
-const { v4: uuid } = require('uuid');
+const router = require("express").Router();
+const fs = require("fs");
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const path = require("path");
+const { v4: uuid } = require("uuid");
+const isAuthenticated = require("../middleware/isAuthenticated");
 
+
+// update user's profilePicture
+router.post("/change-avatar", isAuthenticated, async (req, res) => {
+    try{
+      if (!req.files.profilePicture) {
+        return res.status(400).json({ message: "Please upload an image" });
+      }
+
+      const user = await User.findById(req.user.id);
+      if (user.profilePicture) {
+        fs.unlink(
+          path.join(__dirname, "../uploads", user.profilePicture),
+          (err) => {
+            if (err) {
+              return res.status(500).json({ message: err.message });
+            }
+          }
+        );
+      }
+      const file = req.files.profilePicture;
+      if (file.size > 2000000) {
+        return res.status(400).json({ message: "The file is too big!" });
+      }
+      let fileName = file.name;
+      let split = fileName.split(".");
+      let newFileName = split[0] + uuid() + "." + split[split.length - 1];
+      file.mv(path.join(__dirname, "../uploads", newFileName), async (err) => {
+        if (err) {
+          return res.status(422).json({ message: "The file was not uploaded!" });
+        }
+        const updatedUserPicture = await User.findByIdAndUpdate(req.user.id, {profilePicture: newFileName}, {new: true});
+        if (!updatedUserPicture) {
+          return res.status(422).json({ message: "The file was not uploaded!" });
+        }
+        return res.status(200).json({ message: "The file was uploaded!" });
+      });
+  
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  
+});
 
 // update user's data
-router.put('/', async (req, res) => {
-    // check if the user is logged in and if he/she is the owner of the account
-    if (req.session.user) {
-        const user = await User.findById(req.session.user._id);
-        const newUserData = {};
-        // check if the user wants to change the password
-        if (req.files) {
-            if (req.files.profilePicture) {
-                // delete the old profile picture if it exists
-                if (user.profilePicture) {
-                    fs.unlink(path.join(__dirname, '../uploads', user.profilePicture), (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    });
-                }
-                const file = req.files.profilePicture;
-                if (file.size > 2000000) {
-                    return res.status(400).json({ message: 'The file is too big!' });
-                }
-                let fileName = file.name;
-                let split = fileName.split('.');
-                let newFileName = split[0] + uuid() + '.' + split[split.length - 1];
-                file.mv(path.join(__dirname, '../uploads', newFileName), async (err) => {
-                    if (err) {
-                        return res.status(500).json({ message: 'The file was not uploaded!' });
-                    }
-        
-                });
-                newUserData.profilePicture = newFileName;
-            }
+router.patch("/edit-user", isAuthenticated, async (req, res) => {
+    try {
+        const { username, email, phoneNumber, currentPassword, password, password2 } = req.body;
+        if (!username || !email || !phoneNumber || !currentPassword || !password || !password2) {
+          return res.status(400).json({ message: "Please fill all the fields!" });
         }
 
-        if (req.body) {
-            if (req.body.password) {
-                // harsh the password
-                const salt = await bcrypt.genSalt(10);
-                req.body.password = await bcrypt.hash(req.body.password, salt);
-            }
-            try {
-                const { username, email, phoneNumber, password, password2 } = req.body;
-                if (password !== password2) {
-                    res.status(400).json({ message: "New passwords do not match!" });
-                }
-
-                // check if the user already exists
-                const user = await User.findOne({ email: email });
-                if (user) {
-                    res.status(400).json({ message: "Email already exists!" });
-                }
-
-                const validPassword = bcrypt.compare(
-                    password,
-                    password2
-                );
-                if (!validPassword) {
-                    res.status(400).json({ message: "New passwords are not the same" });
-                }
-                // update the user's data
-                newUserData.username  = username || user.username;
-                newUserData.email  = email || user.email;
-                newUserData.phoneNumber  = phoneNumber || user.phoneNumber;
-                newUserData.password  = password || user.password;
-    
-            } catch (error) {
-                console.log(error);
-            }
+        const user = await User.findById(req.user.id);
+        if (!user) {
+          return res.status(404).json({ message: "User not found!" });
         }
-        try {
-            await User.findByIdAndUpdate(req.session.user._id, newUserData, { new: true });
-            res.status(200).json({ message: 'Your data has been updated!' });
-        } catch (error) {
-            console.log(error);
+        // check if the email already exists
+        const emailExists = await User.findOne({ email });
+        if (emailExists && emailExists._id != req.user.id) {
+          return res.status(422).json({ message: "Email already exists!" });
         }
-        
-    } else {
-        res.status(401).json({ message: 'You are not logged in!' });   
+        // compare the password with the hashed password of the user in the database
+        const validPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!validPassword) {
+          return res.status(422).json({ message: "Try again your old password is incorrect" });
+        }
+        // compare the new password with the confirm password
+        if (password !== password2) {
+            return res.status(422).json({ message: "Passwords do not match!" });
+        }
+        if (password.length < 5 || password2.length < 5) {
+          return res.status(422).json({ message: "Password must be at least 5 characters long" });
+        }
+        // hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const updatedUser = await User.findByIdAndUpdate(req.user.id, {username, email, phoneNumber, password: hashedPassword}, {new: true});
+        if (!updatedUser) {
+          return res.status(422).json({ message: "User was not updated!" });
+        }
+        return res.status(200).json({ message: "User was updated!" });
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
 });
+
 
 // delete user's data
-router.delete('/:id', async (req, res) => {
-    // check if the user is logged in and if he/she is the owner of the account
-    if (req.session.user) {
-        try {
-            await User.findByIdAndDelete(req.session.user._id);
-            req.session.destroy();
-            res.status(200).json({ message: 'Account has been deleted!' });
-        } catch (error) {   
-            console.log(error);
-        }
-    }else {
-        res.status(401).json({ message: 'You can delete only your account!' });
+router.delete("/:id", async (req, res) => {
+  // check if the user is logged in and if he/she is the owner of the account
+  if (req.session.user) {
+    try {
+      await User.findByIdAndDelete(req.session.user._id);
+      req.session.destroy();
+      res.status(200).json({ message: "Account has been deleted!" });
+    } catch (error) {
+      console.log(error);
     }
+  } else {
+    res.status(401).json({ message: "You can delete only your account!" });
+  }
 });
-
-// user's profile
-router.get('/profile', async (req, res) => {
-    // check if the user is logged in
-    if (req.session.user) {
-        const user = await User.findById(req.session.user._id);
-        res.status(200).json({ message: 'Here is your profile', user: {
-            username: user.username,
-            email: user.email,
-            phoneNumber: user.get('phoneNumber'),
-            profilePicture: user.get('profilePicture'),         
-        } });
-    } else {
-        res.status(401).json({ message: 'You are not logged in!' });
-    }
-});
-
 
 // get user's data
-router.get('/:id', async (req, res) => {
-    // find the user by id
-    if (req.params.id) {
-        try {
-            const user = await User.findById(req.params.id);
-            return res.status(200).json({
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                phoneNumber: user.get('phoneNumber'),
-                profilePicture: user.get('profilePicture'),         
-            });
-        } catch (error) {
-            return res.status(404).json({ message: 'User not found!' });
-        }
-    } else {
-        return res.status(500).json({ message: 'User not found!' });
-    }
-
-})
-
+router.get("/:id", async (req, res) => {
+  // find the user by id
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 // get all the users
-router.get('/', async (req, res) => {
-    try {
-        const users = await User.find();
-        return res.status(200).json(users);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-})
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;
