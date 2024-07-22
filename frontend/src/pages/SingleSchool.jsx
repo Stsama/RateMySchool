@@ -4,6 +4,7 @@ import SchoolOwner from '../components/SchoolOwner'
 import { UserContext } from '../context/userContext'
 import DeleteSchool from './DeleteSchool'
 import axios from 'axios'
+import { IoLocationSharp } from "react-icons/io5";
 import Loader from '../components/Loader'
 
 const SingleSchool = () => {
@@ -46,7 +47,8 @@ const SingleSchool = () => {
                     <DeleteSchool schoolId={id}/>
                 </div>}
             </div>
-            <h1>{school.name}</h1>
+            <h1 className='school_name'>{school.name}</h1>
+            <p className='location__section'> <span className="location__icone"> <IoLocationSharp /></span> <span className="country">{school.location}</span> &nbsp; <span className="location">{school.address}</span> </p>
             <div className="post-detail__thumbnail">
                 <img src={`${process.env.REACT_APP_ASSETS_URL}/${school.thumbnail}`} alt="School Name" />
             </div>

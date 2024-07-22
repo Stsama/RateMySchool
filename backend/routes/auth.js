@@ -25,7 +25,7 @@ passport.use(
         googleId: profile.id,
         username: profile.displayName,
         email: profile.emails[0].value,
-        password: await bcrypt.hash(profile.id, 10),
+        password: await bcrypt.hash(profile.emails[0].value, 10),
         profilePicture: profile.photos[0].values,
       };
 
@@ -55,7 +55,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/login-failure",
-    successRedirect: "/dashboard",
+    successRedirect: "http://localhost:3000/login",
   })
 );
 
@@ -71,7 +71,7 @@ router.get("/google-logout", (req, res) => {
       console.log(error);
       res.json({ message: "Error when loggin out " });
     } else {
-      res.redirect("/login");
+      res.redirect("/");
     }
   });
 });
@@ -96,7 +96,7 @@ passport.deserializeUser(async (id, done) => {
 
 // Route to authenticate with Google
 router.get("/", (req, res) => {
-  res.send('<a href="/api/v1/auth/google">Authenticate with Google</a>');
+  res.send('<a href="/api/auth/google">Authenticate with Google</a>');
 });
 
 

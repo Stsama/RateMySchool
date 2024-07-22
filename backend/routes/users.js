@@ -108,7 +108,7 @@ router.delete("/:id", async (req, res) => {
 router.get("/:id", async (req, res) => {
   // find the user by id
   try {
-    const user = await User.findById(req.params.id).select("-password  -phoneNumber -isAdmin");
+    const user = await User.findById(req.params.id).select("-password  -phoneNumber");
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });

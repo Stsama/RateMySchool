@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import SchoolOwner from './SchoolOwner'
+import { IoLocationSharp } from "react-icons/io5";
 
 
 
@@ -15,9 +16,10 @@ const SchoolItem = ({schoolId, name, address, location, phoneNumber,  category, 
             <Link to={`/schools/${schoolId}`} >
                 <h3>{name}</h3>
             </Link>
+            <p className='location__section'> <span className="location__icone"> <IoLocationSharp /></span> <span className="country">{location}</span> &nbsp; <span className="location">{address}</span> </p>
             <p dangerouslySetInnerHTML={{__html: shortDescription}}/>
             <div className="post__footer">
-              <SchoolOwner owner={owner} createdAt={createdAt}/>
+              <SchoolOwner ownerID={owner} createdAt={createdAt}/>
               <Link to={`/schools/categories/${category}`} className='btn category'> {category} </Link>
             </div>
         </div>

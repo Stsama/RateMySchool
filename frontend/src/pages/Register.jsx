@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate,  } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import axios from 'axios';
 
@@ -7,6 +7,16 @@ const Register = () => {
   const [userData, setUserData] = useState({ username: '', email: '', password: '', password2: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  
+
+  const handleGoogleLogin = async () => {
+    try {
+      window.location.href = `http://localhost:5000/api/auth/google`;
+    } catch (error) {
+      
+    }
+  }
 
   const chanceInputHandler = (e) => {
     setUserData(prevState => {
@@ -16,6 +26,7 @@ const Register = () => {
       }
     });
   }
+
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -62,7 +73,8 @@ const Register = () => {
         </form>
         <small>Already have an account? <Link to='/login'>Sign In</Link> </small>
         <p className="center">Or</p>
-        <Link to={`/${process.env.GOOGLE_LOGIN_URL}/api/v1/auth/google`} className='btn primary'><FcGoogle /> Sign Up with google</Link>
+        {/* <Link to={`/${process.env.GOOGLE_LOGIN_URL}/api/v1/auth/google`} className='btn primary'><FcGoogle /> Sign Up with google</Link> */}
+        <button className="btn primary" onClick={handleGoogleLogin}><FcGoogle /> Sign Up with google</button>
       </div>
     </section>
   )

@@ -57,12 +57,12 @@ const CreateSchool = () => {
         {
     withCredentials: true, headers: {Authorization: `Bearer ${token}`}});
       if (response.status === 201) {
-        navigate('/')
+        navigate('/create')
       }
     } catch (error) {
       setError(error?.response?.data?.message)
     }
-      
+      console.log(description)
   }
 
   

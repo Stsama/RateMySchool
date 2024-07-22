@@ -10,15 +10,15 @@ import ru from 'javascript-time-ago/locale/ru.json'
 TimeAgo.addDefaultLocale(en)
 TimeAgo.addLocale(ru)
 
-const SchoolOwner = ({owner, createdAt}) => {
+const SchoolOwner = ({ownerID, createdAt}) => {
   const [founder, setFounder] = useState({});
 
   useEffect(() => {
     const getFounder = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/users/${owner}`)
-        setFounder(response.data);
-        console.log(response.data)
+        // fetch the user of the school
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/users/${ownerID}`)
+        setFounder(response?.data)
       } catch (error) {
       }
     }
@@ -28,7 +28,7 @@ const SchoolOwner = ({owner, createdAt}) => {
 
 
   return (
-    <Link to={`/schools/users/${founder.id}`} className='post__author'>
+    <Link to={`/schools/users/${founder._id}`} className='post__author'>
       <div className="post__author-avatar">
         <img src={`${process.env.REACT_APP_ASSETS_URL}/${founder.profilePicture}`} alt={founder.username} />
       </div>
