@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import SchoolItem from '../components/SchoolItem'
 import Loader from '../components/Loader'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { UserContext } from '../context/userContext'
 
 const AuthorSchools = () => {
   const [schools, setSchools] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const { id } = useParams()
+  const { currentUser } = useContext(UserContext)
+  const token = currentUser?.token
 
   useEffect(() => {
     const fetchSchools = async () => {
@@ -16,7 +19,7 @@ const AuthorSchools = () => {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/v1/schools/users/${id}`)
         setSchools(response?.data)
       } catch (error) {
-        // console.error(error)
+        console.error(id, 'error', "test")
       }
 
       setIsLoading(false)

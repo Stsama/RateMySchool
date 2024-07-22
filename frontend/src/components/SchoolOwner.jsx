@@ -18,6 +18,7 @@ const SchoolOwner = ({owner, createdAt}) => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/users/${owner}`)
         setFounder(response.data);
+        console.log(response.data)
       } catch (error) {
       }
     }

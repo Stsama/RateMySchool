@@ -62,13 +62,13 @@ router.post("/", isAuthenticated, async (req, res) => {
   newSchool.owner = userId;
 
   await new School(newSchool).save();
-  return res.status(201).json({ message: "School created successfully!" });
+  return res.status(201).json(newSchool);
 });
 
 // get all schools
 router.get("/", async (req, res) => {
   try {
-    const schools = await School.find();
+    const schools = await School.find().sort({ createdAt: -1 });
     return res.status(200).json(schools);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -79,25 +79,14 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const school = await School.findById(req.params.id);
-    return res.status(200).json({
-      id: school._id,
-      name: school.name,
-      location: school.location,
-      address: school.address,
-      phoneNumber: school.phoneNumber,
-      description: school.description,
-      category: school.category,
-      thumbnail: school.thumbnail,
-      owner: school.owner,
-      createdAt: school.createdAt,
-    });
+    return res.status(200).json(school);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
 
 // update a school by ID
-router.put("/:id", isAuthenticated, async (req, res) => {
+router.patch("/:id", isAuthenticated, async (req, res) => {
   try {
     const school = await School.findById(req.params.id);
     if (school.owner == req.user.id) {
@@ -177,13 +166,15 @@ router.put("/:id", isAuthenticated, async (req, res) => {
 router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
     const school = await School.findById(req.params.id);
+    // delete school image
+
     if (school.owner == req.user.id) {
-      const oldImages = school.images;
-      if (oldImages && oldImages.length > 0) {
-        oldImages.forEach((image) => {
-          fs.unlinkSync(
-            path.join(__dirname, "..", "SchoolImages", userId, image.filename)
-          );
+      const image = school.thumbnail;
+      if (image) {
+        fs.unlink(path.join(__dirname, "../uploads", image), (err) => {
+          if (err) {
+            console.log(err);
+          }
         });
       }
       await School.findByIdAndDelete(req.params.id);
@@ -209,12 +200,12 @@ router.get("/categories/:category", async (req, res) => {
 });
 
 // get schools by owners
-router.get("/users/:owner", async (req, res) => {
+router.get("/users/:id", async (req, res) => {
   try {
-    const schools = await School.find({ owner: req.params.owner });
+    const schools = await School.find({ owner: req.params.id });
     return res.status(200).json(schools);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(422).json({ message: error.message });
   }
 });
 

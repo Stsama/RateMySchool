@@ -23,13 +23,12 @@ const Header = () => {
             <Link to="/" className="nav__logo" onClick={closeNavHandler}>
                 <img src={service} alt="RateMySchool" />
             </Link>
-            {currentUser?.email && isNavShowing && <ul className='nav__menu'>
-                <li><Link to="/profile/sesese" onClick={closeNavHandler}>Albert Ezoula</Link></li>
+            {currentUser?.token && isNavShowing && <ul className='nav__menu'>
+                <li><Link to={`/profile/${currentUser?.id}` }onClick={closeNavHandler}>{currentUser?.name}</Link></li>
                 <li><Link to="/create" onClick={closeNavHandler}>Add School</Link></li>
-                <li><Link to="/schools" onClick={closeNavHandler}>Schools</Link></li>
                 <li><Link to="/logout" onClick={closeNavHandler}>Logout</Link></li>
             </ul>}
-            {!currentUser?.email && isNavShowing && <ul className='nav__menu'>
+            {!currentUser?.token && isNavShowing && <ul className='nav__menu'>
                 <li><Link to="/authors" onClick={closeNavHandler}>Owners</Link></li>
                 <li><Link to="/login" onClick={closeNavHandler}>Login</Link></li>
             </ul>}

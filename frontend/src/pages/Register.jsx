@@ -62,7 +62,7 @@ const Register = () => {
         </form>
         <small>Already have an account? <Link to='/login'>Sign In</Link> </small>
         <p className="center">Or</p>
-        <Link to={`${process.env.REACT_APP_BASE_URL}/auth/google`} className='btn primary'><FcGoogle /> Sign Up with google</Link>
+        <Link to={`/${process.env.GOOGLE_LOGIN_URL}/api/v1/auth/google`} className='btn primary'><FcGoogle /> Sign Up with google</Link>
       </div>
     </section>
   )

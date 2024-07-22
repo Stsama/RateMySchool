@@ -23,7 +23,7 @@ const Schools = () => {
       }
       fetchSchools();
     }, []);
-
+  // console.log(schools)
   if (isLoading) {
     return <Loader />
   }

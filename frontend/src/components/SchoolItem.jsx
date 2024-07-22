@@ -15,7 +15,7 @@ const SchoolItem = ({schoolId, name, address, location, phoneNumber,  category, 
             <Link to={`/schools/${schoolId}`} >
                 <h3>{name}</h3>
             </Link>
-            <p>{shortDescription}</p>
+            <p dangerouslySetInnerHTML={{__html: shortDescription}}/>
             <div className="post__footer">
               <SchoolOwner owner={owner} createdAt={createdAt}/>
               <Link to={`/schools/categories/${category}`} className='btn category'> {category} </Link>
