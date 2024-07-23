@@ -12,7 +12,7 @@ const Register = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      window.location.href = `http://localhost:5000/api/auth/google`;
+      window.location.href = `${process.env.REACT_APP_BASE_URL}/api/auth/google`;
     } catch (error) {
       
     }
