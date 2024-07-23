@@ -26,7 +26,7 @@ const SchoolSchema = new mongoose.Schema({
         max: 50,
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         required: true,
         min: 7
     },

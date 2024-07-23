@@ -80,7 +80,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
-  origin: 'http://localhost:3000', // Votre URL frontend
+  origin: '*', // Votre URL frontend
   credentials: true // Permettre l'envoi de cookies
 }));
 

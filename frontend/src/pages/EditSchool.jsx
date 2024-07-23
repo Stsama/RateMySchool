@@ -11,7 +11,6 @@ const EditSchool = () => {
   const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
   const [address, setAddress] = useState('')
-  const [owner, setOwner] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [thumbnail, setThumbnail] = useState('')
   const [error, setError] = useState("")
@@ -48,12 +47,12 @@ const EditSchool = () => {
     const getSchool = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/v1/schools/${id}`)
+          console.log(response.data.name)
           setName(response.data.name)
           setCategory(response.data.category)
           setLocation(response.data.location)
           setAddress(response.data.address)
           setDescription(response.data.description)
-          setOwner(response.data.owner)
           setPhoneNumber(response.data.phoneNumber)
           setThumbnail(response.data.thumbnail)
       } catch (error) {
@@ -104,7 +103,6 @@ const EditSchool = () => {
             }
           </select>
           <input type="text" placeholder='Enter school location' name='location' value={location} onChange={e => setLocation(e.target.value)}/>
-          <input type="text" placeholder='Enter school Owner' name='owner' value={owner} onChange={e => setOwner(e.target.value)}/>
           <input type="tel" placeholder='Enter school phone number' name='phoneNumber' value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}/>
           <input type="file" name={thumbnail} onChange={e => setThumbnail(e.target.files[0])} accept='png, jpg, jpeg'/>
           <ReactQuill theme='snow' value={description} onChange={setDescription} modules={modules} formats={formats} placeholder='Enter school description' />

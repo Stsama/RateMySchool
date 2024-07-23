@@ -57,7 +57,7 @@ const CreateSchool = () => {
         {
     withCredentials: true, headers: {Authorization: `Bearer ${token}`}});
       if (response.status === 201) {
-        navigate('/create')
+        navigate(`/schools/users/${currentUser?.id}`)
       }
     } catch (error) {
       setError(error?.response?.data?.message)

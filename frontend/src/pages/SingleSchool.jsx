@@ -43,7 +43,7 @@ const SingleSchool = () => {
             <div className="post-detail__header">
                 <SchoolOwner ownerID={school.owner} createdAt={school.createdAt}/>
                 {currentUser?.id === school?.owner && <div className="post-detail__buttons">
-                    <Link to={`/schools/${school.id}/edit`} className="btn sm primary">Edit</Link>
+                    <Link to={`/schools/${school._id}/edit`} className="btn sm primary">Edit</Link>
                     <DeleteSchool schoolId={id}/>
                 </div>}
             </div>
