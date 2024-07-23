@@ -40,7 +40,7 @@ const Register = () => {
       // return;
     }
     try {
-      const response = await axios.post(`http://localhost:5000/api/auth/register`, userData);
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/auth/register`, userData);
       if (response && response.data) {
         const newUser = response.data;
         console.log(newUser);
