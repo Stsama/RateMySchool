@@ -62,7 +62,6 @@ const CreateSchool = () => {
     } catch (error) {
       setError(error?.response?.data?.message)
     }
-      console.log(description)
   }
 
   

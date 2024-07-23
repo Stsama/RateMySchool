@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import SchoolItem from '../components/SchoolItem'
 import Loader from '../components/Loader'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { UserContext } from '../context/userContext'
 
 const AuthorSchools = () => {
   const [schools, setSchools] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const { id } = useParams()
-  const { currentUser } = useContext(UserContext)
-  const token = currentUser?.token
+  // const { currentUser } = useContext(UserContext)
+  // const token = currentUser?.token
 
   useEffect(() => {
     const fetchSchools = async () => {
@@ -25,7 +24,7 @@ const AuthorSchools = () => {
       setIsLoading(false)
     }
     fetchSchools();
-  }, []);
+  }, [id]);
 
   if (isLoading) {
     return <Loader />

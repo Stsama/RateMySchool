@@ -34,7 +34,7 @@ const UserProfile = () => {
   // fetch the user
   useEffect(() => {
     const getUser = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/users/${currentUser.id}`, { withCredentials: true, headers: { Authorization: `Bearer ${token}` } })
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/users/${currentUser?.id}`, { withCredentials: true, headers: { Authorization: `Bearer ${token}` } })
       const { username, email, profilePicture } = response?.data
       setusername(username)
       setEmail(email)
@@ -50,7 +50,7 @@ const UserProfile = () => {
       const postData = new FormData()
       postData.set('profilePicture', profilePicture)
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/users/change-avatar`, postData, { withCredentials: true, headers: { Authorization: `Bearer ${token}` } })
-      setprofilePicture(response?.data.profilePicture)
+      setprofilePicture(response?.data?.profilePicture)
       console.log(response.data.profilePicture)
     } catch (error) {
       console.log(error)
