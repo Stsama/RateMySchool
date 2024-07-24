@@ -65,10 +65,10 @@ const Register = () => {
         <h2>Sign Up</h2>
         <form className="form register__form" onSubmit={registerUser}>
           {error && <p className="form__error-message">{ error }</p>}
-          <input type="text" placeholder='Enter your Full Name'name='username' value={userData.username} onChange={chanceInputHandler} />
-          <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} />
-          <input type="password" placeholder='Enter your password'name='password' value={userData.password} onChange={chanceInputHandler} />
-          <input type="password" placeholder='confirm your password'name='password2' value={userData.password2} onChange={chanceInputHandler} />
+          <input type="text" placeholder='Enter your Full Name'name='username' value={userData.username} onChange={chanceInputHandler} autoComplete='username' />
+          <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} autoComplete='email' />
+          <input type="password" placeholder='Enter your password'name='password' value={userData.password} onChange={chanceInputHandler} autoComplete='password' />
+          <input type="password" placeholder='confirm your password'name='password2' value={userData.password2} onChange={chanceInputHandler} autoComplete='password2'/>
           <button className='btn primary'>Sign Up</button>
         </form>
         <small>Already have an account? <Link to='/login'>Sign In</Link> </small>

@@ -25,6 +25,7 @@ const Header = () => {
             </Link>
             {currentUser?.token && isNavShowing && <ul className='nav__menu'>
                 <li><Link to={`/profile/${currentUser?.id}` }onClick={closeNavHandler}>{currentUser?.name}</Link></li>
+                <li><Link to="/authors" onClick={closeNavHandler}>Owners</Link></li>
                 <li><Link to="/create" onClick={closeNavHandler}>Add School</Link></li>
                 <li><Link to="/logout" onClick={closeNavHandler}>Logout</Link></li>
             </ul>}

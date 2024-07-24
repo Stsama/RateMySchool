@@ -42,8 +42,8 @@ const Login = () => {
         <h2>Login</h2>
         <form className="form login__form" onSubmit={ loginUser }>
           {error && <p className="form__error-message">{ error }</p>}
-          <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} autoFocus />
-          <input type="password" placeholder='Enter your password'name='password' value={userData.password} onChange={chanceInputHandler} />
+          <input type="email" placeholder='Enter your email'name='email' value={userData.email} onChange={chanceInputHandler} autoComplete='email' autoFocus />
+          <input type="password" placeholder='Enter your password'name='password' value={userData.password} onChange={chanceInputHandler} autoComplete='password' />
           <button className='btn primary'>Login</button>
         </form>
         <small>Don't have an account? <Link to='/register'>Sign Up</Link> </small>

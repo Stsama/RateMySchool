@@ -34,7 +34,7 @@
 }
 
 body{
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
     background: var(--color-gb);
     font-size: 0.9rem;
     line-height: 1.6;

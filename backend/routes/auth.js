@@ -139,36 +139,31 @@ router.post("/register", async (req, res, next) => {
 
 // login from the form
 router.post("/login", async (req, res) => {
-  if (req.session.user) {
-    return res.status(200).json({ message: "You are already logged in!"});
-    // res.status(200).json(req.session.user);
-  } else {
-    try {
-      if (!req.body.email || !req.body.password) {
-        return res.status(400).json({ message: "Please fill all the fields!" });
-      }
-      if (req.body.password && req.body.email.toLowerCase()) {
-        const user = await User.findOne({
-          email: req.body.email,
-        });
-        if (!user) {
-          return res.status(400).json({ message: "Wrong Credentials!" });
-        }
-        const validPassword = await bcrypt.compare(
-          req.body.password,
-          user.password
-        );
-        if (!validPassword) {
-          return res.status(404).json({ message: "Wrong Credentials!" });
-        }
-        const {_id: id, username: name} = user;
-        const token = JWT.sign({id, name}, process.env.JWT_SECRET, {expiresIn: '1d'});
-        
-        return res.status(200).json({token, id, name});
-      }
-    } catch (error) {
-      console.log(error);
+  try {
+    if (!req.body.email || !req.body.password) {
+      return res.status(400).json({ message: "Please fill all the fields!" });
     }
+    if (req.body.password && req.body.email.toLowerCase()) {
+      const user = await User.findOne({
+        email: req.body.email,
+      });
+      if (!user) {
+        return res.status(400).json({ message: "Wrong Credentials!" });
+      }
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (!validPassword) {
+        return res.status(404).json({ message: "Wrong Credentials!" });
+      }
+      const {_id: id, username: name} = user;
+      const token = JWT.sign({id, name}, process.env.JWT_SECRET, {expiresIn: '1d'});
+      
+      return res.status(200).json({token, id, name});
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
