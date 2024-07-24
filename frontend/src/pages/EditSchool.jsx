@@ -47,7 +47,7 @@ const EditSchool = () => {
     const getSchool = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/v1/schools/${id}`)
-          console.log(response.data.name)
+          // console.log(response.data.name)
           setName(response.data.name)
           setCategory(response.data.category)
           setLocation(response.data.location)

@@ -697,6 +697,10 @@ input, select, textarea{
         grid-template-columns: repeat(2, 3fr);
         gap: 1rem;
     }
+    .register, .login, .create-post{
+        width: 90%;
+        padding: 1rem;
+    }
 }
 
 @media screen and (max-width: 550px) {
@@ -719,6 +723,10 @@ input, select, textarea{
     .posts__container{
         grid-template-columns: repeat(1, 1fr);
         gap: 1rem;
+    }
+    .register, .login, .create-post{
+        width: 100%;
+        padding: 1rem;
     }
 }
 

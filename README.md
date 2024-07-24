@@ -12,7 +12,7 @@ RateMySchool a platform that provides detailed information about schools to help
 
 ## Tech Stack
 
-**Client:**  React, Redux, BootStrap
+**Client:**  React, HTML5, CSS5
 
 **Server:**  Node, Express
 
@@ -39,3 +39,13 @@ To deploy this project run
   npm run dev
 ```
 
+
+## Link to the MVP
+
+https://ratemyschool.onrender.com
+
+
+
+## Screenshots
+
+![App Screenshot](Capture d’écran 2024-07-24 015709.png)
